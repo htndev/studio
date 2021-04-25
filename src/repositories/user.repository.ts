@@ -1,12 +1,11 @@
-import { UserSearchInput } from './../user/types/user-search.input';
-import { QueryResult } from './../common/constants/type.constant';
-import { Maybe } from '@xbeat/toolkit';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { buildFieldLabels } from '@xbeat/server-toolkit';
 import { EntityRepository, Repository } from 'typeorm';
 
 import { AllowedUserFields } from '../common/constants/type.constant';
 import { User } from '../entities/user.entity';
+import { QueryResult } from '../common/constants/type.constant';
+import { UserSearchInput } from '../user/types/user-search.input';
 
 @Injectable()
 @EntityRepository(User)

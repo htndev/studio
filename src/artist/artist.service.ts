@@ -1,4 +1,6 @@
-import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { UpdateArtistHeaderInput } from './inputs/update-artist-header.input';
+import { UpdateArtistAvatarInput } from './inputs/update-artist-avatar.input';
+import { HttpStatus, Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ExistsType, StatusType, UserJwtPayload } from '@xbeat/server-toolkit';
 
@@ -52,5 +54,47 @@ export class ArtistService {
 
   async findArtistById(id: number) {
     return this.artistRepository.findById(id);
+  }
+
+  async updateArtistAvatar({ url, avatar }: UpdateArtistAvatarInput, { id }: UserJwtPayload): Promise<StatusType> {
+    const artist = await this.artistRepository.findOne({ url });
+
+    if (!artist) {
+      throw new NotFoundException('Artist does not exist');
+    }
+
+    if (artist.userId !== id) {
+      throw new ConflictException('You cannot modify not your own artist');
+    }
+
+    artist.avatar = avatar;
+
+    await artist.save();
+
+    return {
+      status: HttpStatus.ACCEPTED,
+      message: 'Avatar updated successfully'
+    };
+  }
+
+  async updateArtistHeader({ url, header }: UpdateArtistHeaderInput, { id }: UserJwtPayload): Promise<StatusType> {
+    const artist = await this.artistRepository.findOne({ url });
+
+    if (!artist) {
+      throw new NotFoundException('Artist does not exist');
+    }
+
+    if (artist.userId !== id) {
+      throw new ConflictException('You cannot modify not your own artist');
+    }
+
+    artist.header = header;
+
+    await artist.save();
+
+    return {
+      status: HttpStatus.ACCEPTED,
+      message: 'Header updated successfully'
+    };
   }
 }

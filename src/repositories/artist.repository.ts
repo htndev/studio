@@ -5,7 +5,7 @@ import { EntityRepository, Repository } from 'typeorm';
 import { MAX_ARTIST_URL_LENGTH } from '../common/constants/common.constant';
 import RandomProvider from '../common/providers/random/random.provider';
 import { Artist } from '../entities/artist.entity';
-import { AllowedArtistFields, QueryResult } from './../common/constants/type.constant';
+import { AllowedArtistFields, QueryResult } from '../common/constants/type.constant';
 
 @Injectable()
 @EntityRepository(Artist)

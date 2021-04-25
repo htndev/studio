@@ -17,6 +17,8 @@ import { ArtistModule } from './artist/artist.module';
 import { CommonModule } from './common/common.module';
 import { ConfigModule as ConfigManagerModule } from './common/providers/config/config.module';
 import { UserModule } from './user/user.module';
+import { AlbumModule } from './album/album.module';
+import { SongModule } from './song/song.module';
 
 @Module({
   imports: [
@@ -85,7 +87,9 @@ import { UserModule } from './user/user.module';
     }),
     CommonModule,
     ArtistModule,
-    UserModule
+    UserModule,
+    AlbumModule,
+    SongModule
   ],
   providers: [
     {

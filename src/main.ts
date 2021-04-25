@@ -13,6 +13,11 @@ async function bootstrap() {
   const config = app.get(AppConfig);
 
   app.setGlobalPrefix(config.apiVersion);
+  app.enableCors({
+    origin: config.allowedDomains,
+    allowedHeaders: config.allowedHeaders,
+    credentials: true
+  });
   app.disable('x-powered-by');
   app.use(helmet({ contentSecurityPolicy: !config.isDevMode ? undefined : false }));
   app.use(compression());

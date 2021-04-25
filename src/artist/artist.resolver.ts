@@ -1,3 +1,4 @@
+import { UpdateArtistHeaderInput } from './inputs/update-artist-header.input';
 import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { CurrentUser, ExistsType, GraphQLJwtGuard, StatusType, UserJwtPayload } from '@xbeat/server-toolkit';
@@ -11,6 +12,7 @@ import { ArtistService } from './artist.service';
 import { ArtistExistsInput } from './inputs/artist-exists.input';
 import { ArtistSearchInput } from './inputs/artist-search.input';
 import { NewArtistInput } from './inputs/new-artist.input';
+import { UpdateArtistAvatarInput } from './inputs/update-artist-avatar.input';
 import { ArtistType } from './types/artist.type';
 
 @UseGuards(GraphQLJwtGuard)
@@ -24,6 +26,22 @@ export class ArtistResolver {
     @CurrentUser('graphql') user: UserJwtPayload
   ): Promise<StatusType> {
     return this.artistService.createArtists(newArtistInput, user);
+  }
+
+  @Mutation(() => StatusType)
+  async updateArtistAvatar(
+    @Args('updateArtistAvatarInput') updateArtistAvatarInput: UpdateArtistAvatarInput,
+    @CurrentUser('graphql') user: UserJwtPayload
+  ): Promise<StatusType> {
+    return this.artistService.updateArtistAvatar(updateArtistAvatarInput, user);
+  }
+
+  @Mutation(() => StatusType)
+  async updateArtistHeader(
+    @Args('updateArtistHeaderInput') updateArtistHeaderInput: UpdateArtistHeaderInput,
+    @CurrentUser('graphql') user: UserJwtPayload
+  ): Promise<StatusType> {
+    return this.artistService.updateArtistHeader(updateArtistHeaderInput, user);
   }
 
   @Query(() => ExistsType)
