@@ -1,4 +1,4 @@
-import { MAX_ARTIST_URL_LENGTH } from './../../common/constants/common.constant';
+import { MAX_ARTIST_URL_LENGTH } from '../../common/constants/common.constant';
 import { InputType } from '@nestjs/graphql';
 import { OptionalField } from '@xbeat/server-toolkit';
 import { FIELD_LENGTH } from '@xbeat/toolkit';

@@ -4,7 +4,7 @@ import { CurrentUser, GraphQLJwtGuard, StatusType, UserJwtPayload } from '@xbeat
 
 import { AlbumType } from '../common/types/album.type';
 import { ArtistService } from '../artist/artist.service';
-import { ArtistType } from './../artist/types/artist.type';
+import { ArtistType } from '../artist/types/artist.type';
 import { Album } from '../entities/album.entity';
 import { AlbumService } from './album.service';
 import { AlbumsSearchInput } from './inputs/albums-search.input';

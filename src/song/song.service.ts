@@ -38,11 +38,13 @@ export class SongService {
   }
 
   private formatSongs(songs: Song[]): SongType[] {
-    return songs.map(({ name, file, albumId, url, album: { released } }) => ({
+    return songs.map(({ id, name, file, albumId, url, album: { released, artistId } }) => ({
+      id,
       name,
       file,
       url,
       albumId,
+      artistId,
       released: released < new Date()
     }));
   }

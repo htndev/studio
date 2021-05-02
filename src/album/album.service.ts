@@ -1,16 +1,15 @@
 import { BadRequestException, ConflictException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { StatusType, UserJwtPayload, buildFieldLabels } from '@xbeat/server-toolkit';
-import { Like, In } from 'typeorm';
+import { buildFieldLabels, StatusType, UserJwtPayload } from '@xbeat/server-toolkit';
 
 import { NewSongInput } from '../common/inputs/new-song.input';
+import { AlbumType } from '../common/types/album.type';
 import { Album } from '../entities/album.entity';
 import { Artist } from '../entities/artist.entity';
 import { AlbumRepository } from '../repositories/album.repository';
 import { ArtistRepository } from '../repositories/artist.repository';
 import { FeaturingRepository } from '../repositories/featuring.repository';
 import { SongRepository } from '../repositories/song.repository';
-import { AlbumType } from '../common/types/album.type';
 import { AlbumsSearchInput } from './inputs/albums-search.input';
 import { NewAlbumInput } from './inputs/new-album.input';
 
@@ -115,6 +114,10 @@ export class AlbumService {
     );
 
     return this.formatAlbums(albums);
+  }
+
+  async findAlbumById(id: number): Promise<Album> {
+    return this.albumRepository.findAlbumById(id);
   }
 
   private formatAlbums(albums: Album[]): AlbumType[] {

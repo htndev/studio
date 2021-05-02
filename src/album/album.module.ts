@@ -1,5 +1,5 @@
-import { UserRepository } from './../repositories/user.repository';
-import { ArtistService } from './../artist/artist.service';
+import { UserRepository } from '../repositories/user.repository';
+import { ArtistService } from '../artist/artist.service';
 import { DateService } from '@xbeat/server-toolkit';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
