@@ -1,15 +1,14 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { buildFieldLabels } from '@xbeat/server-toolkit';
-import { EntityRepository, Repository } from 'typeorm';
+import { BaseRepository, buildFieldLabels } from '@xbeat/server-toolkit';
+import { EntityRepository } from 'typeorm';
 
-import { AllowedUserFields } from '../common/constants/type.constant';
+import { AllowedUserFields, QueryResult } from '../common/constants/type.constant';
 import { User } from '../entities/user.entity';
-import { QueryResult } from '../common/constants/type.constant';
 import { UserSearchInput } from '../user/types/user-search.input';
 
 @Injectable()
 @EntityRepository(User)
-export class UserRepository extends Repository<User> {
+export class UserRepository extends BaseRepository<User> {
   readonly label = 'user';
   readonly defaultReturnFields: AllowedUserFields[] = ['id', 'email', 'username'];
 

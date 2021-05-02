@@ -1,15 +1,15 @@
 import { ConflictException, Injectable } from '@nestjs/common';
-import { buildFieldLabels } from '@xbeat/server-toolkit';
-import { EntityRepository, Repository } from 'typeorm';
+import { BaseRepository, buildFieldLabels } from '@xbeat/server-toolkit';
+import { EntityRepository } from 'typeorm';
 
 import { MAX_ARTIST_URL_LENGTH } from '../common/constants/common.constant';
+import { AllowedArtistFields, QueryResult } from '../common/constants/type.constant';
 import RandomProvider from '../common/providers/random/random.provider';
 import { Artist } from '../entities/artist.entity';
-import { AllowedArtistFields, QueryResult } from '../common/constants/type.constant';
 
 @Injectable()
 @EntityRepository(Artist)
-export class ArtistRepository extends Repository<Artist> {
+export class ArtistRepository extends BaseRepository<Artist> {
   private readonly label = 'artist';
   private readonly defaultFields = ['id', 'name', 'url', 'header', 'avatar'];
 
@@ -27,19 +27,9 @@ export class ArtistRepository extends Repository<Artist> {
     return artist.save();
   }
 
-  async isExists(query: Partial<Artist>): Promise<boolean> {
-    try {
-      await this.findOneOrFail(query);
-
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-
   async findById<F extends AllowedArtistFields>(id: number, fields?: F[]): Promise<QueryResult<Artist, F>> {
     return this.createQueryBuilder(this.label)
-      .select(buildFieldLabels(this.label, fields ?? this.defaultFields))
+      .select(buildFieldLabels(this.label, fields ?? [...this.defaultFields, 'userId']))
       .where('id = :id', { id })
       .getOne();
   }
@@ -52,6 +42,16 @@ export class ArtistRepository extends Repository<Artist> {
       .select(buildFieldLabels(this.label, [...this.defaultFields, 'userId']))
       .where(`${searchCriteria} ILIKE :${searchCriteria}`, { [searchCriteria]: `%${searchValue}%` })
       .getMany();
+  }
+
+  async isUserOwnerOfArtist(userId: number, url: string): Promise<boolean> {
+    const artist = await this.findOne({ userId, url });
+
+    return !!artist;
+  }
+
+  async findUserArtists(userId: number): Promise<Artist[]> {
+    return this.find({ userId });
   }
 
   private async generateRandomArtistUrl(): Promise<string> {

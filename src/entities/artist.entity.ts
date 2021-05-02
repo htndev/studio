@@ -1,10 +1,10 @@
-import { Featuring } from './featuring.entity';
-import { Album } from './album.entity';
 import { EnhancedBaseEntity } from '@xbeat/server-toolkit';
 import { FIELD_LENGTH, Nullable } from '@xbeat/toolkit';
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, Index, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 import { MAX_ARTIST_URL_LENGTH } from '../common/constants/common.constant';
+import { Album } from './album.entity';
+import { Featuring } from './featuring.entity';
 import { User } from './user.entity';
 
 @Entity('artists')
@@ -24,6 +24,7 @@ export class Artist extends EnhancedBaseEntity {
     length: MAX_ARTIST_URL_LENGTH,
     unique: true
   })
+  @Index()
   url: string;
 
   @Column({
@@ -37,6 +38,9 @@ export class Artist extends EnhancedBaseEntity {
     type: 'varchar'
   })
   header: Nullable<string>;
+
+  @Column({ default: false })
+  isVerified: boolean;
 
   @ManyToOne(
     () => User,

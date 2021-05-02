@@ -1,10 +1,10 @@
-import { Featuring } from './featuring.entity';
-import { Album } from './album.entity';
 import { EnhancedBaseEntity } from '@xbeat/server-toolkit';
 import { FIELD_LENGTH } from '@xbeat/toolkit';
-import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 import { MAX_ALBUM_URL_LENGTH } from '../common/constants/common.constant';
+import { Album } from './album.entity';
+import { Featuring } from './featuring.entity';
 
 @Entity('songs')
 export class Song extends EnhancedBaseEntity {
@@ -26,9 +26,10 @@ export class Song extends EnhancedBaseEntity {
   })
   url: string;
 
-  @OneToOne(
+  @ManyToOne(
     () => Album,
-    album => album.songs
+    album => album.songs,
+    { eager: true }
   )
   @JoinColumn()
   album: Album;

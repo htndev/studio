@@ -1,6 +1,4 @@
-import { UpdateArtistHeaderInput } from './inputs/update-artist-header.input';
-import { UpdateArtistAvatarInput } from './inputs/update-artist-avatar.input';
-import { HttpStatus, Injectable, NotFoundException, ConflictException } from '@nestjs/common';
+import { ConflictException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ExistsType, StatusType, UserJwtPayload } from '@xbeat/server-toolkit';
 
@@ -10,6 +8,9 @@ import { UserRepository } from '../repositories/user.repository';
 import { ArtistExistsInput } from './inputs/artist-exists.input';
 import { ArtistSearchInput } from './inputs/artist-search.input';
 import { NewArtistInput } from './inputs/new-artist.input';
+import { UpdateArtistAvatarInput } from './inputs/update-artist-avatar.input';
+import { UpdateArtistHeaderInput } from './inputs/update-artist-header.input';
+import { ArtistType } from './types/artist.type';
 
 @Injectable()
 export class ArtistService {
@@ -52,7 +53,7 @@ export class ArtistService {
     return user.artists;
   }
 
-  async findArtistById(id: number) {
+  async findArtistById(id: number): Promise<ArtistType> {
     return this.artistRepository.findById(id);
   }
 

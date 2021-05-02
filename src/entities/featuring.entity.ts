@@ -1,24 +1,33 @@
-import { Song } from './song.entity';
-import { Artist } from './artist.entity';
 import { EnhancedBaseEntity } from '@xbeat/server-toolkit';
-import { Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+
+import { Artist } from './artist.entity';
+import { Song } from './song.entity';
 
 @Entity('featuring')
 export class Featuring extends EnhancedBaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToOne(
+  @ManyToOne(
     () => Artist,
     artist => artist.featuring,
     { eager: true }
   )
+  @JoinColumn()
   artist: Artist;
 
-  @OneToOne(
+  @Column()
+  artistId: number;
+
+  @ManyToOne(
     () => Song,
     song => song.featuring,
     { eager: true }
   )
+  @JoinColumn()
   song: Song;
+
+  @Column()
+  songId: number;
 }

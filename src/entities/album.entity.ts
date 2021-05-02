@@ -1,7 +1,6 @@
-import { Featuring } from './featuring.entity';
 import { EnhancedBaseEntity } from '@xbeat/server-toolkit';
 import { FIELD_LENGTH, Nullable } from '@xbeat/toolkit';
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 import { MAX_ALBUM_URL_LENGTH } from '../common/constants/common.constant';
 import { Artist } from './artist.entity';
@@ -25,12 +24,17 @@ export class Album extends EnhancedBaseEntity {
   cover: Nullable<string>;
 
   @Column({
+    type: 'timestamp'
+  })
+  released: Date;
+
+  @Column({
     type: 'varchar',
     length: MAX_ALBUM_URL_LENGTH
   })
   url: string;
 
-  @OneToOne(
+  @ManyToOne(
     () => Artist,
     artist => artist.albums,
     { eager: true }
