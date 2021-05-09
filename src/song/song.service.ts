@@ -37,6 +37,20 @@ export class SongService {
     return this.formatSongs(songs);
   }
 
+  async findSongByAlbumId(albumId: number): Promise<SongType[]> {
+    const songs = await this.songRepository.find({ albumId });
+
+    return songs.map(({ name, url, albumId, album: { artistId, released }, file, id }) => ({
+      name,
+      url,
+      albumId,
+      artistId,
+      file,
+      songId: id,
+      released: new Date() > released
+    }));
+  }
+
   private formatSongs(songs: Song[]): SongType[] {
     return songs.map(({ id, name, file, albumId, url, album: { released, artistId } }) => ({
       id,

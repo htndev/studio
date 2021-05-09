@@ -1,6 +1,6 @@
 import { EnhancedBaseEntity } from '@xbeat/server-toolkit';
 import { FIELD_LENGTH } from '@xbeat/toolkit';
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, Index, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 import { MAX_ALBUM_URL_LENGTH } from '../common/constants/common.constant';
 import { Album } from './album.entity';
@@ -15,6 +15,7 @@ export class Song extends EnhancedBaseEntity {
     type: 'varchar',
     length: FIELD_LENGTH.SONG.MAX
   })
+  @Index()
   name: string;
 
   @Column()
@@ -24,6 +25,7 @@ export class Song extends EnhancedBaseEntity {
     type: 'varchar',
     length: MAX_ALBUM_URL_LENGTH
   })
+  @Index()
   url: string;
 
   @ManyToOne(

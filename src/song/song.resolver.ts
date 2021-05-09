@@ -1,5 +1,3 @@
-import { Artist } from './../entities/artist.entity';
-import { FeaturingType } from './../common/types/featuring.type';
 import { UseGuards } from '@nestjs/common';
 import { Args, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { CurrentUser, GraphQLJwtGuard, UserJwtPayload } from '@xbeat/server-toolkit';
@@ -7,11 +5,11 @@ import { CurrentUser, GraphQLJwtGuard, UserJwtPayload } from '@xbeat/server-tool
 import { AlbumService } from '../album/album.service';
 import { ArtistService } from '../artist/artist.service';
 import { ArtistType } from '../artist/types/artist.type';
+import { FeaturingService } from '../common/services/featuring/featuring.service';
 import { AlbumType } from '../common/types/album.type';
 import { SongType } from '../common/types/song.type';
 import { Album } from '../entities/album.entity';
 import { Song } from '../entities/song.entity';
-import { FeaturingService } from '../common/services/featuring/featuring.service';
 import { SongSearchInput } from './inputs/song-search.input';
 import { SongService } from './song.service';
 
@@ -43,8 +41,8 @@ export class SongResolver {
     return this.artistService.findArtistById(song.artistId);
   }
 
-  @ResolveField(() => FeaturingType)
-  async feat(@Parent() { id, artistId }: Song & { artistId: number }): Promise<any> {
-    return this.featuringService.findFeat({ songId: id, artistId });
+  @ResolveField(() => [ArtistType])
+  async feat(@Parent() { songId }: Song & { songId: number }): Promise<ArtistType[]> {
+    return this.featuringService.findFeat({ songId });
   }
 }

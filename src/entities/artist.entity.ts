@@ -17,6 +17,7 @@ export class Artist extends EnhancedBaseEntity {
     length: FIELD_LENGTH.ARTIST.MAX,
     unique: true
   })
+  @Index()
   name: string;
 
   @Column({

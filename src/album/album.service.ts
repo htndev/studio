@@ -1,4 +1,5 @@
-import { BadRequestException, ConflictException, HttpStatus, Injectable } from '@nestjs/common';
+import { ChangeReleaseDate } from './inputs/change-release-date.input';
+import { BadRequestException, ConflictException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { buildFieldLabels, StatusType, UserJwtPayload } from '@xbeat/server-toolkit';
 
@@ -10,6 +11,7 @@ import { AlbumRepository } from '../repositories/album.repository';
 import { ArtistRepository } from '../repositories/artist.repository';
 import { FeaturingRepository } from '../repositories/featuring.repository';
 import { SongRepository } from '../repositories/song.repository';
+import { UserRepository } from '../repositories/user.repository';
 import { AlbumsSearchInput } from './inputs/albums-search.input';
 import { NewAlbumInput } from './inputs/new-album.input';
 
@@ -19,7 +21,8 @@ export class AlbumService {
     @InjectRepository(AlbumRepository) private readonly albumRepository: AlbumRepository,
     @InjectRepository(SongRepository) private readonly songRepository: SongRepository,
     @InjectRepository(FeaturingRepository) private readonly featuringRepository: FeaturingRepository,
-    @InjectRepository(ArtistRepository) private readonly artistRepository: ArtistRepository
+    @InjectRepository(ArtistRepository) private readonly artistRepository: ArtistRepository,
+    @InjectRepository(UserRepository) private readonly userRepository: UserRepository
   ) {}
 
   async createAlbum(newAlbumInput: NewAlbumInput, currentUser: UserJwtPayload): Promise<StatusType> {
@@ -65,18 +68,17 @@ export class AlbumService {
         if (!feats.length) {
           return this.songRepository.createNewSong({ name, file, url: artist.url, album });
         }
-
+        const song = await this.songRepository.createNewSong({
+          name,
+          file,
+          url: artist.url,
+          album
+        });
         let artists = await Promise.all(feats.map(async url => this.artistRepository.findOne({ url })));
         artists = artists.filter(Boolean);
 
         await Promise.all(
           artists.map(async artist => {
-            const song = await this.songRepository.createNewSong({
-              name,
-              file,
-              url: artist.url,
-              album
-            });
             await this.featuringRepository.createFeaturing({ song, artist });
           })
         );
@@ -118,6 +120,46 @@ export class AlbumService {
 
   async findAlbumById(id: number): Promise<Album> {
     return this.albumRepository.findAlbumById(id);
+  }
+
+  async releaseAlbumNow(albumUrl: string, userId: number): Promise<StatusType> {
+    const album = await this.albumRepository.findOne({ url: albumUrl });
+
+    if (!album) {
+      throw new NotFoundException(`Album with id '${albumUrl}' not found`);
+    }
+
+    if (album.artist.userId !== userId) {
+      throw new NotFoundException(`Album with id '${albumUrl}' not found`);
+    }
+
+    album.released = new Date();
+
+    await album.save();
+
+    return {
+      status: HttpStatus.ACCEPTED
+    };
+  }
+
+  async changeReleaseDate({ releaseDate, albumUrl }: ChangeReleaseDate): Promise<StatusType> {
+    if (Number.isNaN(releaseDate)) {
+      throw new BadRequestException('Release date should be number timestamp');
+    }
+
+    const album = await this.albumRepository.findOne({ url: albumUrl });
+
+    if (!album) {
+      throw new NotFoundException(`Album with url '${albumUrl}' not found`);
+    }
+
+    album.released = new Date(releaseDate);
+
+    album.save();
+
+    return {
+      status: HttpStatus.ACCEPTED
+    };
   }
 
   private formatAlbums(albums: Album[]): AlbumType[] {
