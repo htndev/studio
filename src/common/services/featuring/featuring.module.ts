@@ -1,4 +1,4 @@
-import { ArtistRepository } from './../../../repositories/artist.repository';
+import { ArtistRepository } from '..//../../repositories/artist.repository';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

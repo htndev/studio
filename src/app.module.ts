@@ -19,6 +19,7 @@ import { ConfigModule as ConfigManagerModule } from './common/providers/config/c
 import { UserModule } from './user/user.module';
 import { AlbumModule } from './album/album.module';
 import { SongModule } from './song/song.module';
+import { PlaylistModule } from './playlist/playlist.module';
 
 @Module({
   imports: [
@@ -89,7 +90,8 @@ import { SongModule } from './song/song.module';
     ArtistModule,
     UserModule,
     AlbumModule,
-    SongModule
+    SongModule,
+    PlaylistModule
   ],
   providers: [
     {

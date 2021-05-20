@@ -1,3 +1,4 @@
+import { MAX_ALBUM_URL_LENGTH } from '..//common/constants/common.constant';
 import { ChangeReleaseDate } from './inputs/change-release-date.input';
 import { BadRequestException, ConflictException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -159,6 +160,39 @@ export class AlbumService {
 
     return {
       status: HttpStatus.ACCEPTED
+    };
+  }
+
+  async deleteAlbum(url: string, userId: number): Promise<StatusType> {
+    if (!url) {
+      throw new BadRequestException('Album url should be provided');
+    }
+
+    if (url.length < MAX_ALBUM_URL_LENGTH) {
+      throw new BadRequestException('Album url is too short');
+    }
+
+    const album = await this.albumRepository.findOne({ url });
+    const artists = await this.artistRepository.findUserArtists(userId);
+    const artistsIds = artists.map(({ id }) => id);
+
+    if (!artistsIds.includes(album.artistId)) {
+      throw new ConflictException('You can delete only your own artists albums');
+    }
+
+    const songs = await this.songRepository.find({ albumId: album.id });
+
+    await Promise.all(
+      songs.map(async song => {
+        await this.featuringRepository.delete({ songId: song.id });
+        await song.remove();
+      })
+    );
+
+    await album.remove();
+
+    return {
+      status: HttpStatus.OK
     };
   }
 

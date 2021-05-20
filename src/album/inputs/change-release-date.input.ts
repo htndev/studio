@@ -1,4 +1,4 @@
-import { MAX_ALBUM_URL_LENGTH } from './../../common/constants/common.constant';
+import { MAX_ALBUM_URL_LENGTH } from '..//../common/constants/common.constant';
 import { Field, InputType } from '@nestjs/graphql';
 import { IsNotEmpty, IsNumber, IsString, Length } from 'class-validator';
 

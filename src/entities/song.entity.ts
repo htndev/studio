@@ -1,6 +1,8 @@
+import { PlaylistSong } from './playlist-song.entity';
+import { PlaylistService } from '..//playlist/playlist.service';
 import { EnhancedBaseEntity } from '@xbeat/server-toolkit';
 import { FIELD_LENGTH } from '@xbeat/toolkit';
-import { Column, Entity, Index, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, Index, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
 import { MAX_ALBUM_URL_LENGTH } from '../common/constants/common.constant';
 import { Album } from './album.entity';
@@ -44,4 +46,11 @@ export class Song extends EnhancedBaseEntity {
     feat => feat.song
   )
   featuring: Featuring;
+
+  @OneToMany(
+    () => PlaylistSong,
+    playlistSong => playlistSong.song,
+    { eager: false }
+  )
+  songInPlaylist: PlaylistSong;
 }

@@ -1,3 +1,4 @@
+import { Playlist } from './playlist.entity';
 import { Artist } from './artist.entity';
 import { EnhancedBaseEntity } from '@xbeat/server-toolkit';
 import { Nullable } from '@xbeat/toolkit';
@@ -36,4 +37,11 @@ export class User extends EnhancedBaseEntity {
     { eager: true }
   )
   artists: Artist[];
+
+  @OneToMany(
+    () => Playlist,
+    playlist => playlist.owner,
+    { eager: false }
+  )
+  playlists: Playlist[];
 }

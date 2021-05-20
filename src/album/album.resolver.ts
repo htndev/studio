@@ -7,8 +7,8 @@ import { ArtistService } from '../artist/artist.service';
 import { ArtistType } from '../artist/types/artist.type';
 import { AlbumType } from '../common/types/album.type';
 import { Album } from '../entities/album.entity';
-import { SongType } from './../common/types/song.type';
-import { SongService } from './../song/song.service';
+import { SongType } from '..//common/types/song.type';
+import { SongService } from '..//song/song.service';
 import { AlbumService } from './album.service';
 import { AlbumsSearchInput } from './inputs/albums-search.input';
 import { NewAlbumInput } from './inputs/new-album.input';
@@ -43,6 +43,11 @@ export class AlbumResolver {
     @Args('changeReleaseDateInput') changeReleaseDateInput: ChangeReleaseDate
   ): Promise<StatusType> {
     return this.albumService.changeReleaseDate(changeReleaseDateInput);
+  }
+
+  @Mutation(() => StatusType)
+  async deleteAlbum(@Args('url') url: string, @CurrentUser('graphql') { id }: UserJwtPayload): Promise<StatusType> {
+    return this.albumService.deleteAlbum(url, id);
   }
 
   @Query(() => [AlbumType])
