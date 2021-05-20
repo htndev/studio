@@ -1,8 +1,9 @@
+import { EnhancedBaseEntity } from '@xbeat/server-toolkit';
+import { PlaylistAvailability } from '@xbeat/toolkit';
+import { Column, Entity, Index, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+
 import { PlaylistSong } from './playlist-song.entity';
 import { User } from './user.entity';
-import { PlaylistAvailability } from '../common/constants/playlist.constant';
-import { EnhancedBaseEntity } from '@xbeat/server-toolkit';
-import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
 @Entity('playlist')
 export class Playlist extends EnhancedBaseEntity {

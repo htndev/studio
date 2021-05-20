@@ -1,6 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-
-import { PlaylistAvailability } from '../../common/constants/playlist.constant';
+import { PlaylistAvailability } from '@xbeat/toolkit';
 
 @ObjectType()
 export class PlaylistType {

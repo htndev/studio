@@ -1,17 +1,17 @@
-import { PlaylistSong } from './../entities/playlist-song.entity';
-import { SongRepository } from './../repositories/song.repository';
-import { NewSongPlaylistInput } from './inputs/new-song-playlist.input';
 import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { StatusType, UserJwtPayload } from '@xbeat/server-toolkit';
+import { PlaylistAvailability } from '@xbeat/toolkit';
 
-import { PlaylistAvailability } from '../common/constants/playlist.constant';
 import { SongType } from '../common/types/song.type';
+import { PlaylistSong } from '../entities/playlist-song.entity';
 import { Playlist } from '../entities/playlist.entity';
 import { PlaylistSongRepository } from '../repositories/playlist-song.repository';
 import { PlaylistRepository } from '../repositories/playlist.repository';
+import { SongRepository } from '../repositories/song.repository';
 import { UserRepository } from '../repositories/user.repository';
 import { NewPlaylistInput } from './inputs/new-playlist.input';
+import { NewSongPlaylistInput } from './inputs/new-song-playlist.input';
 import { PlaylistSearch } from './inputs/playlist-search.input';
 import { PlaylistType } from './types/playlist.type';
 
@@ -109,7 +109,8 @@ export class PlaylistService {
     return songs.map(({ song }) => ({
       ...song,
       released: song.album.released < new Date(),
-      artistId: song.album.artistId
+      artistId: song.album.artistId,
+      songId: song.id
     }));
   }
 }
