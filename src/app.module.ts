@@ -20,6 +20,7 @@ import { UserModule } from './user/user.module';
 import { AlbumModule } from './album/album.module';
 import { SongModule } from './song/song.module';
 import { PlaylistModule } from './playlist/playlist.module';
+import { SearchModule } from './search/search.module';
 
 @Module({
   imports: [
@@ -91,7 +92,8 @@ import { PlaylistModule } from './playlist/playlist.module';
     UserModule,
     AlbumModule,
     SongModule,
-    PlaylistModule
+    PlaylistModule,
+    SearchModule
   ],
   providers: [
     {

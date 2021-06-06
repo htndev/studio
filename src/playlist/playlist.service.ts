@@ -1,4 +1,5 @@
-import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { PlaylistCoverUpload } from './inputs/playlist-cover-upload.input';
+import { HttpStatus, Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { StatusType, UserJwtPayload } from '@xbeat/server-toolkit';
 import { PlaylistAvailability } from '@xbeat/toolkit';
@@ -101,6 +102,35 @@ export class PlaylistService {
     const filteredPlaylist = playlists.filter(excludeOtherPrivatePlaylists);
 
     return filteredPlaylist;
+  }
+
+  async updatePlaylistCover(
+    { cover, playlist: url }: PlaylistCoverUpload,
+    { username }: UserJwtPayload
+  ): Promise<StatusType> {
+    const playlist = await this.playlistRepository.findOne({ url });
+
+    if (!playlist) {
+      throw new NotFoundException('Playlist not found');
+    }
+
+    if (playlist.owner.username !== username) {
+      throw new ConflictException('You can not edit not your own playlist');
+    }
+
+    if (playlist.cover === cover) {
+      return {
+        status: HttpStatus.ACCEPTED
+      };
+    }
+
+    playlist.cover = cover;
+
+    await playlist.save();
+
+    return {
+      status: HttpStatus.ACCEPTED
+    };
   }
 
   async findSongs(playlist: Playlist): Promise<SongType[]> {

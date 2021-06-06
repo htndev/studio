@@ -1,5 +1,5 @@
 import { EnhancedBaseEntity } from '@xbeat/server-toolkit';
-import { PlaylistAvailability } from '@xbeat/toolkit';
+import { PlaylistAvailability, Nullable } from '@xbeat/toolkit';
 import { Column, Entity, Index, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 import { PlaylistSong } from './playlist-song.entity';
@@ -29,6 +29,12 @@ export class Playlist extends EnhancedBaseEntity {
     default: PlaylistAvailability.Private
   })
   availability: PlaylistAvailability;
+
+  @Column({
+    type: 'varchar',
+    nullable: true
+  })
+  cover: Nullable<string>;
 
   @ManyToOne(
     () => User,

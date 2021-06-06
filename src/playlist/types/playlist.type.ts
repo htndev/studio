@@ -1,5 +1,6 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { PlaylistAvailability } from '@xbeat/toolkit';
+import { OptionalField } from '@xbeat/server-toolkit';
+import { PlaylistAvailability, Nullable } from '@xbeat/toolkit';
 
 @ObjectType()
 export class PlaylistType {
@@ -11,4 +12,7 @@ export class PlaylistType {
 
   @Field()
   url: string;
+
+  @OptionalField(() => String)
+  cover: Nullable<string>;
 }
