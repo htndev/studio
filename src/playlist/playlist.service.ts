@@ -1,3 +1,4 @@
+import { UpdatePlaylistAvailabilityInput } from './inputs/update-playlist-availability.input';
 import { PlaylistCoverUpload } from './inputs/playlist-cover-upload.input';
 import { HttpStatus, Injectable, NotFoundException, ConflictException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -159,6 +160,41 @@ export class PlaylistService {
 
     return {
       status: HttpStatus.ACCEPTED
+    };
+  }
+
+  async updatePlaylistAvailability(
+    { availability, playlist: url }: UpdatePlaylistAvailabilityInput,
+    { id }: UserJwtPayload
+  ): Promise<StatusType> {
+    const playlist = await this.playlistRepository.findOne({ url });
+
+    if (!playlist) {
+      throw new NotFoundException('Playlist not found');
+    }
+
+    if (playlist.owner.id !== id) {
+      throw new NotFoundException('Playlist not found');
+    }
+
+    const isValidAvailability = [PlaylistAvailability.Private, PlaylistAvailability.Public].includes(availability);
+
+    if (!isValidAvailability) {
+      throw new BadRequestException('Wrong availability status type');
+    }
+
+    if (playlist.availability === availability) {
+      return {
+        status: HttpStatus.ACCEPTED
+      };
+    }
+
+    playlist.availability = availability;
+
+    await playlist.save();
+
+    return {
+      status: HttpStatus.OK
     };
   }
 

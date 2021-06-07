@@ -47,15 +47,17 @@ export class SearchService {
         url: album.url,
         artistId: album.artistId
       })),
-      songs: songs.map(song => ({
-        name: song.name,
-        url: song.url,
-        released: song.album.released < new Date(),
-        file: song.file,
-        albumId: song.albumId,
-        artistId: song.album.artistId,
-        songId: song.id
-      })),
+      songs: songs
+        .filter(song => song.album.released < new Date())
+        .map(song => ({
+          name: song.name,
+          url: song.url,
+          released: song.album.released < new Date(),
+          file: song.file,
+          albumId: song.albumId,
+          artistId: song.album.artistId,
+          songId: song.id
+        })),
       playlists
     };
   }

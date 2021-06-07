@@ -105,13 +105,15 @@ export class ArtistService {
   async findAlbums(artist: Artist): Promise<AlbumType[]> {
     const albums = await this.albumRepository.find({ artistId: artist.id });
 
-    return albums.map(({ id, name, url, cover, released, artistId }) => ({
-      id,
-      name,
-      url,
-      cover,
-      released: released.toISOString(),
-      artistId
-    }));
+    return albums
+      .filter(album => album.released < new Date())
+      .map(({ id, name, url, cover, released, artistId }) => ({
+        id,
+        name,
+        url,
+        cover,
+        released: released.toISOString(),
+        artistId
+      }));
   }
 }

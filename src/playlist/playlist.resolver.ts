@@ -1,3 +1,4 @@
+import { UpdatePlaylistAvailabilityInput } from './inputs/update-playlist-availability.input';
 import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { CurrentUser, GraphQLJwtGuard, StatusType, UserJwtPayload } from '@xbeat/server-toolkit';
@@ -47,6 +48,14 @@ export class PlaylistResolver {
     @CurrentUser('graphql') user: UserJwtPayload
   ): Promise<StatusType> {
     return this.playlistService.updatePlaylistCover(playlistCoverUploadInput, user);
+  }
+
+  @Mutation(() => StatusType)
+  async updatePlaylistAvailability(
+    @Args('input') updatePlaylistAvailabilityInput: UpdatePlaylistAvailabilityInput,
+    @CurrentUser('graphql') user: UserJwtPayload
+  ): Promise<StatusType> {
+    return this.playlistService.updatePlaylistAvailability(updatePlaylistAvailabilityInput, user);
   }
 
   @Query(() => [PlaylistType])
