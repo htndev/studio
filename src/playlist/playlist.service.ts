@@ -1,5 +1,5 @@
 import { PlaylistCoverUpload } from './inputs/playlist-cover-upload.input';
-import { HttpStatus, Injectable, NotFoundException, ConflictException } from '@nestjs/common';
+import { HttpStatus, Injectable, NotFoundException, ConflictException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { StatusType, UserJwtPayload } from '@xbeat/server-toolkit';
 import { PlaylistAvailability } from '@xbeat/toolkit';
@@ -12,7 +12,7 @@ import { PlaylistRepository } from '../repositories/playlist.repository';
 import { SongRepository } from '../repositories/song.repository';
 import { UserRepository } from '../repositories/user.repository';
 import { NewPlaylistInput } from './inputs/new-playlist.input';
-import { NewSongPlaylistInput } from './inputs/new-song-playlist.input';
+import { PlaylistSongInput } from './inputs/playlist-song.input';
 import { PlaylistSearch } from './inputs/playlist-search.input';
 import { PlaylistType } from './types/playlist.type';
 
@@ -35,7 +35,7 @@ export class PlaylistService {
   }
 
   async addSongToPlaylist(
-    { song: songUrl, playlist: playlistUrl }: NewSongPlaylistInput,
+    { song: songUrl, playlist: playlistUrl }: PlaylistSongInput,
     { id }: UserJwtPayload
   ): Promise<StatusType> {
     const playlist = await this.playlistRepository.findOne({ url: playlistUrl, ownerId: id });
@@ -69,6 +69,35 @@ export class PlaylistService {
     return {
       status: HttpStatus.CREATED,
       message: 'Song added to playlist'
+    };
+  }
+
+  async removeSongFromPlaylist(
+    { song: songUrl, playlist: playlistUrl }: PlaylistSongInput,
+    { id }: UserJwtPayload
+  ): Promise<StatusType> {
+    const playlist = await this.playlistRepository.findOne({ url: playlistUrl, ownerId: id });
+
+    if (!playlist) {
+      throw new NotFoundException('Playlist not found');
+    }
+
+    const song = await this.songRepository.findOne({ url: songUrl });
+
+    if (!song) {
+      throw new NotFoundException('Song not found');
+    }
+
+    const isPairExist = await this.playlistSongRepository.isPairExist({ songId: song.id, playlistId: playlist.id });
+
+    if (!isPairExist) {
+      throw new ConflictException('Pair do not exist');
+    }
+
+    await this.playlistSongRepository.delete({ songId: song.id, playlistId: playlist.id });
+
+    return {
+      status: HttpStatus.OK
     };
   }
 

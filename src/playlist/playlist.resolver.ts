@@ -6,9 +6,9 @@ import { SongType } from '../common/types/song.type';
 import { Playlist } from '../entities/playlist.entity';
 import { UserType } from '../user/types/user.type';
 import { NewPlaylistInput } from './inputs/new-playlist.input';
-import { NewSongPlaylistInput } from './inputs/new-song-playlist.input';
 import { PlaylistCoverUpload } from './inputs/playlist-cover-upload.input';
 import { PlaylistSearch } from './inputs/playlist-search.input';
+import { PlaylistSongInput } from './inputs/playlist-song.input';
 import { PlaylistService } from './playlist.service';
 import { PlaylistType } from './types/playlist.type';
 
@@ -27,10 +27,18 @@ export class PlaylistResolver {
 
   @Mutation(() => StatusType)
   async addSongToPlaylist(
-    @Args('newSongPlaylistInput') newSongPlaylistInput: NewSongPlaylistInput,
+    @Args('newSongPlaylistInput') playlistSongInput: PlaylistSongInput,
     @CurrentUser('graphql') user: UserJwtPayload
   ): Promise<StatusType> {
-    return this.playlistService.addSongToPlaylist(newSongPlaylistInput, user);
+    return this.playlistService.addSongToPlaylist(playlistSongInput, user);
+  }
+
+  @Mutation(() => StatusType)
+  async removeSongFromPlaylist(
+    @Args('playlistSongInput') playlistSongInput: PlaylistSongInput,
+    @CurrentUser('graphql') user: UserJwtPayload
+  ): Promise<StatusType> {
+    return this.playlistService.removeSongFromPlaylist(playlistSongInput, user);
   }
 
   @Mutation(() => StatusType)

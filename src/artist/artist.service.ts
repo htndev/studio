@@ -2,11 +2,11 @@ import { ConflictException, HttpStatus, Injectable, NotFoundException } from '@n
 import { InjectRepository } from '@nestjs/typeorm';
 import { ExistsType, StatusType, UserJwtPayload } from '@xbeat/server-toolkit';
 
+import { AlbumType } from '../common/types/album.type';
 import { Artist } from '../entities/artist.entity';
+import { AlbumRepository } from '../repositories/album.repository';
 import { ArtistRepository } from '../repositories/artist.repository';
 import { UserRepository } from '../repositories/user.repository';
-import { AlbumType } from '../common/types/album.type';
-import { AlbumRepository } from '../repositories/album.repository';
 import { ArtistExistsInput } from './inputs/artist-exists.input';
 import { ArtistSearchInput } from './inputs/artist-search.input';
 import { NewArtistInput } from './inputs/new-artist.input';

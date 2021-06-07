@@ -1,9 +1,8 @@
-import { MAX_ALBUM_URL_LENGTH } from '..//common/constants/common.constant';
-import { ChangeReleaseDate } from './inputs/change-release-date.input';
 import { BadRequestException, ConflictException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { buildFieldLabels, StatusType, UserJwtPayload } from '@xbeat/server-toolkit';
 
+import { MAX_ALBUM_URL_LENGTH } from '..//common/constants/common.constant';
 import { NewSongInput } from '../common/inputs/new-song.input';
 import { AlbumType } from '../common/types/album.type';
 import { Album } from '../entities/album.entity';
@@ -14,6 +13,7 @@ import { FeaturingRepository } from '../repositories/featuring.repository';
 import { SongRepository } from '../repositories/song.repository';
 import { UserRepository } from '../repositories/user.repository';
 import { AlbumsSearchInput } from './inputs/albums-search.input';
+import { ChangeReleaseDate } from './inputs/change-release-date.input';
 import { NewAlbumInput } from './inputs/new-album.input';
 
 @Injectable()
