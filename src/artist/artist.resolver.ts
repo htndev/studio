@@ -1,3 +1,4 @@
+import { AlbumType } from './../common/types/album.type';
 import { UpdateArtistHeaderInput } from './inputs/update-artist-header.input';
 import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
@@ -62,5 +63,10 @@ export class ArtistResolver {
   @ResolveField(() => UserType)
   async user(@Parent() artist: Artist): Promise<Maybe<Pick<User, 'id' | 'username' | 'email'>>> {
     return this.userService.findUserById(artist.userId);
+  }
+
+  @ResolveField(() => [AlbumType])
+  async albums(@Parent() artist: Artist): Promise<AlbumType[]> {
+    return this.artistService.findAlbums(artist);
   }
 }

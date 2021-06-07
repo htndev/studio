@@ -5,6 +5,8 @@ import { ExistsType, StatusType, UserJwtPayload } from '@xbeat/server-toolkit';
 import { Artist } from '../entities/artist.entity';
 import { ArtistRepository } from '../repositories/artist.repository';
 import { UserRepository } from '../repositories/user.repository';
+import { AlbumType } from '../common/types/album.type';
+import { AlbumRepository } from '../repositories/album.repository';
 import { ArtistExistsInput } from './inputs/artist-exists.input';
 import { ArtistSearchInput } from './inputs/artist-search.input';
 import { NewArtistInput } from './inputs/new-artist.input';
@@ -16,7 +18,8 @@ import { ArtistType } from './types/artist.type';
 export class ArtistService {
   constructor(
     @InjectRepository(UserRepository) private readonly userRepository: UserRepository,
-    @InjectRepository(Artist) private readonly artistRepository: ArtistRepository
+    @InjectRepository(ArtistRepository) private readonly artistRepository: ArtistRepository,
+    @InjectRepository(AlbumRepository) private readonly albumRepository: AlbumRepository
   ) {}
 
   async createArtists({ name }: NewArtistInput, { id }: UserJwtPayload): Promise<StatusType> {
@@ -97,5 +100,18 @@ export class ArtistService {
       status: HttpStatus.ACCEPTED,
       message: 'Header updated successfully'
     };
+  }
+
+  async findAlbums(artist: Artist): Promise<AlbumType[]> {
+    const albums = await this.albumRepository.find({ artistId: artist.id });
+
+    return albums.map(({ id, name, url, cover, released, artistId }) => ({
+      id,
+      name,
+      url,
+      cover,
+      released: released.toISOString(),
+      artistId
+    }));
   }
 }
